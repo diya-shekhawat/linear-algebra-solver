@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% block title %}2D Transformation Visualizer – Algebrify{% endblock %}
+{% block meta_description %}Visualize 2D linear transformations — rotation, scaling, reflection, shear — live on a canvas.{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <div>
+    <div class="page-heading mb-0">
+      <h1>🎨 2D Linear Transformation Visualizer</h1>
+      <p>Observe how a 2×2 matrix warps the unit square in real-time on an interactive coordinate plane.</p>
+    </div>
+  </div>
+  <div>
+    <span class="badge-engine">
+      <span class="dot-pulse"></span> HTML5 Canvas Interactive
+    </span>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Controls Column -->
+  <div class="col-12 col-lg-5">
+    <!-- Presets Card -->
+    <div class="card card-custom mb-3">
+      <div class="card-header-custom">
+        <span><i class="bi bi-collection-play me-1"></i> Preset Transformations</span>
+      </div>
+      <div class="card-body p-3">
+        <div class="d-flex flex-column gap-2">
+          <button class="preset-btn" onclick="loadPreset('identity')">🔸 Identity (No Change)</button>
+          <button class="preset-btn" onclick="loadPreset('rotate90')">🔄 Rotate 90° Counter-Clockwise</button>
+          <button class="preset-btn" onclick="loadPreset('rotate45')">🔄 Rotate 45° Counter-Clockwise</button>
+          <button class="preset-btn" onclick="loadPreset('scaleXY')">🔲 Scale (2× X, 1.5× Y)</button>
+          <button class="preset-btn" onclick="loadPreset('reflectX')">🪞 Reflect over X-axis</button>
+          <button class="preset-btn" onclick="loadPreset('reflectY')">🪞 Reflect over Y-axis</button>
+          <button class="preset-btn" onclick="loadPreset('shearX')">↗ Horizontal Shear</button>
+          <button class="preset-btn" onclick="loadPreset('shear45')">↗ 45° Shear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Matrix Matrix T Card -->
+    <div class="card card-custom mb-3">
+      <div class="card-header-custom">
+        <span><i class="bi bi-grid-3x3 me-1"></i> Custom 2×2 Matrix T</span>
+      </div>
+      <div class="card-body p-3 text-center">
+        <div id="transformGrid" class="mb-3" style="overflow-x:auto;"></div>
+        <button class="btn-solve w-100 justify-content-center" onclick="applyTransform()">
+          <i class="bi bi-play-fill solve-icon"></i>
+          Apply Transformation
+        </button>
+      </div>
+    </div>
+
+    <!-- Formulas -->
+    <div class="card card-custom">
+      <div class="card-header-custom">
+        <span><i class="bi bi-journal-code me-1"></i> Transformation Matrices</span>
+      </div>
+      <div class="card-body p-3">
+        <div class="mb-2">
+          <div class="small text-warning fw-bold">Rotation θ</div>
+          <div style="font-size:0.85rem;">\[ R = \begin{bmatrix}\cos\theta & -\sin\theta \\ \sin\theta & \cos\theta\end{bmatrix} \]</div>
+        </div>
+        <div class="mb-2">
+          <div class="small text-warning fw-bold">Scaling (sₓ, sᵧ)</div>
+          <div style="font-size:0.85rem;">\[ S = \begin{bmatrix}s_x & 0 \\ 0 & s_y\end{bmatrix} \]</div>
+        </div>
+        <div>
+          <div class="small text-warning fw-bold">Horizontal Shear k</div>
+          <div style="font-size:0.85rem;">\[ H = \begin{bmatrix}1 & k \\ 0 & 1\end{bmatrix} \]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visualizer Column -->
+  <div class="col-12 col-lg-7">
+    <!-- Canvas Card -->
+    <div class="card card-custom mb-3">
+      <div class="card-header-custom">
+        <span><i class="bi bi-easel me-1"></i> Coordinate Plane Preview</span>
+        <span class="small text-secondary fw-normal">Blue: Original · Purple: Transformed</span>
+      </div>
+      <div class="card-body p-3">
+        <canvas id="transformCanvas" width="540" height="420" style="display:block;width:100%;max-height:420px;"></canvas>
+      </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stat-grid mb-3">
+      <div class="stat-card">
+        <div class="stat-label">det(T)</div>
+        <div class="stat-val" id="detVal">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Area Scale</div>
+        <div class="stat-val" id="areaScale">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Invertible?</div>
+        <div class="stat-val" id="invertible">—</div>
+      </div>
+    </div>
+
+    <!-- Legend & Info -->
+    <div class="card card-custom">
+      <div class="card-body p-3">
+        <div class="fw-bold mb-2 text-warning"><i class="bi bi-info-circle me-1"></i> Geometric Interpretation</div>
+        <ul style="font-size:0.82rem;color:var(--white-40);line-height:1.9;margin:0;padding-left:1.2rem;">
+          <li><strong style="color:#6366f1;">Blue outline</strong> — original unit square (0,0) → (1,0) → (1,1) → (0,1)</li>
+          <li><strong style="color:#c084fc;">Purple polygon</strong> — position after matrix multiplication $T \cdot v$</li>
+          <li><strong style="color:#ef4444;">Red vector (i')</strong> — transformed basis vector $T \cdot [1,0]^T$</li>
+          <li><strong style="color:#10b981;">Green vector (j')</strong> — transformed basis vector $T \cdot [0,1]^T$</li>
+          <li>$|\det(T)|$ corresponds to the scaling factor of parallelogram area.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const PRESETS = {
+  identity: [[1,0],[0,1]],
+  rotate90: [[0,-1],[1,0]],
+  rotate45: [[Math.cos(Math.PI/4),-Math.sin(Math.PI/4)],[Math.sin(Math.PI/4),Math.cos(Math.PI/4)]],
+  scaleXY:  [[2,0],[0,1.5]],
+  reflectX: [[1,0],[0,-1]],
+  reflectY: [[-1,0],[0,1]],
+  shearX:   [[1,0.75],[0,1]],
+  shear45:  [[1,1],[0,1]],
+};
+
+function loadPreset(name) {
+  const m = PRESETS[name];
+  if (!m) return;
+  document.getElementById('tm_0_0').value = +m[0][0].toFixed(4);
+  document.getElementById('tm_0_1').value = +m[0][1].toFixed(4);
+  document.getElementById('tm_1_0').value = +m[1][0].toFixed(4);
+  document.getElementById('tm_1_1').value = +m[1][1].toFixed(4);
+  applyTransform();
+}
+
+function getT() {
+  return [
+    [parseFloat(document.getElementById('tm_0_0').value)||0,
+     parseFloat(document.getElementById('tm_0_1').value)||0],
+    [parseFloat(document.getElementById('tm_1_0').value)||0,
+     parseFloat(document.getElementById('tm_1_1').value)||0],
+  ];
+}
+
+function applyTransform() {
+  const m = getT();
+  draw2DTransformation('transformCanvas', m);
+
+  const det = m[0][0]*m[1][1] - m[0][1]*m[1][0];
+  document.getElementById('detVal').textContent    = det.toFixed(3);
+  document.getElementById('areaScale').textContent = Math.abs(det).toFixed(3) + '×';
+  document.getElementById('invertible').textContent= Math.abs(det) > 1e-10 ? '✅ Yes' : '❌ No';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  buildMatrixGrid('transformGrid', 2, 2, 'tm', (i,j) => i===j?1:0);
+  applyTransform();
+});
+</script>
+{% endblock %}

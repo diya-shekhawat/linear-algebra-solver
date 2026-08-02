@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}FAQs – Algebrify Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center max-w-2xl mx-auto mb-5">
+        <h1 class="display-5 fw-bold">Frequently Asked Questions</h1>
+        <p class="text-muted">Everything you need to know about Algebrify lessons, solvers, and accounts.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="accordion shadow-sm rounded-4" id="mainFaq">
+                <div class="accordion-item border-0 mb-3 rounded-3 card-custom">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button rounded-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#q1">
+                            What linear algebra topics are covered in Unit 1 and Unit 2?
+                        </button>
+                    </h2>
+                    <div id="q1" class="accordion-collapse collapse show" data-bs-parent="#mainFaq">
+                        <div class="accordion-body text-muted">
+                            Unit 1 covers Matrix Introduction, Types of Matrices, Addition/Subtraction/Multiplication, Transpose, Symmetry, Gaussian & Gauss-Jordan Elimination, LU Decomposition, and Vector Algebra. Unit 2 covers 2D Linear Transformations, Determinants, Cofactors, Adjoint Inverses, Characteristic Equations, Eigenvalues, Eigenvectors, and Matrix Diagonalization.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 mb-3 rounded-3 card-custom">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed rounded-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#q2">
+                            Can I save study notes and bookmark lessons?
+                        </button>
+                    </h2>
+                    <div id="q2" class="accordion-collapse collapse" data-bs-parent="#mainFaq">
+                        <div class="accordion-body text-muted">
+                            Yes! Simply log in to your account. On every lesson page, you can bookmark the lesson for quick access and create custom study notes that persist across sessions.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 rounded-3 card-custom">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed rounded-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#q3">
+                            How does the Learning Streak work?
+                        </button>
+                    </h2>
+                    <div id="q3" class="accordion-collapse collapse" data-bs-parent="#mainFaq">
+                        <div class="accordion-body text-muted">
+                            Every day you log in, review lessons, or complete quizzes, your learning streak increases. Keep returning daily to maintain your active streak!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

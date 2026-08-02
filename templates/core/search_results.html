@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results for "{{ query }}" – Algebrify{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4">
+        <h2 class="fw-bold">Search Results for "<span class="text-primary">{{ query }}</span>"</h2>
+        <p class="text-muted">Found {{ total_results }} matching results across lessons, topics, and units.</p>
+    </div>
+
+    {% if total_results == 0 %}
+        <div class="card card-custom p-5 text-center my-5">
+            <i class="bi bi-search fs-1 text-muted mb-3"></i>
+            <h4>No matching content found</h4>
+            <p class="text-muted">Try searching with different keywords like "Matrix", "Eigenvalues", "Vector", or "Gauss".</p>
+            <div class="mt-3">
+                <a href="{% url 'courses:index' %}" class="btn btn-primary rounded-pill px-4">Browse All Lessons</a>
+            </div>
+        </div>
+    {% else %}
+        {% if lessons %}
+            <h4 class="fw-bold mb-3"><i class="bi bi-journal-text text-primary me-2"></i> Matching Lessons</h4>
+            <div class="row g-3 mb-4">
+                {% for lesson in lessons %}
+                    <div class="col-md-6">
+                        <div class="card card-custom h-100 p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-primary-subtle text-primary">{{ lesson.topic.title }}</span>
+                                <span class="small text-muted">Order #{{ lesson.order }}</span>
+                            </div>
+                            <h5 class="fw-bold"><a href="{% url 'courses:lesson_detail' lesson.id %}" class="text-decoration-none text-reset">{{ lesson.title }}</a></h5>
+                            <p class="small text-muted mb-3">{{ lesson.introduction|truncatewords:20 }}</p>
+                            <div class="mt-auto">
+                                <a href="{% url 'courses:lesson_detail' lesson.id %}" class="btn btn-sm btn-outline-primary rounded-pill">Read Lesson <i class="bi bi-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if topics %}
+            <h4 class="fw-bold mb-3"><i class="bi bi-diagram-3 text-purple me-2"></i> Matching Topics</h4>
+            <div class="list-group mb-4">
+                {% for topic in topics %}
+                    <a href="{% url 'courses:topic_detail' topic.id %}" class="list-group-item list-group-item-action p-3 rounded-3 mb-2 card-custom border">
+                        <h5 class="fw-bold mb-1">{{ topic.title }}</h5>
+                        <p class="text-muted small mb-0">{{ topic.description }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

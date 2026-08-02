@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Quizzes – Algebrify Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="text-center max-w-2xl mx-auto mb-5">
+        <span class="badge bg-purple-subtle text-purple border px-3 py-2 rounded-pill fw-semibold mb-2">Practice Quizzes</span>
+        <h1 class="display-5 fw-bold">Test Your Linear Algebra Knowledge</h1>
+        <p class="text-muted">Timed quizzes with randomized questions, instant scoring, and detailed step explanations.</p>
+    </div>
+
+    <div class="row g-4">
+        {% for quiz in quizzes %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card card-custom h-100 p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-primary-subtle text-primary border">Unit {{ quiz.topic.unit.unit_number }}</span>
+                        <span class="badge bg-secondary-subtle text-secondary"><i class="bi bi-clock me-1"></i> {{ quiz.time_limit_minutes }} mins</span>
+                    </div>
+
+                    <h4 class="fw-bold mb-2">{{ quiz.title }}</h4>
+                    <p class="text-muted small mb-3">{{ quiz.description|default:quiz.topic.title }}</p>
+
+                    <div class="mb-4 small">
+                        <div class="d-flex justify-content-between text-muted mb-1">
+                            <span><i class="bi bi-patch-question me-1"></i> {{ quiz.questions.count }} Questions</span>
+                            <span>Pass Mark: {{ quiz.pass_mark_percentage }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'quiz:quiz_take' quiz.id %}" class="btn btn-primary w-100 rounded-pill fw-bold shadow-sm">
+                                <i class="bi bi-play-fill me-1"></i> Start Quiz
+                            </a>
+                        {% else %}
+                            <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary w-100 rounded-pill fw-semibold">
+                                Log in to Take Quiz
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

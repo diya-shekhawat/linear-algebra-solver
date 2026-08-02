@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}About Algebrify – Mission, Vision & Technology{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center max-w-2xl mx-auto mb-5">
+        <span class="badge bg-primary-subtle text-primary border px-3 py-2 rounded-pill fw-semibold mb-2">About Us</span>
+        <h1 class="display-5 fw-bold">Empowering Math Learners Worldwide</h1>
+        <p class="lead text-muted">Discover the mission, vision, and cutting-edge technology behind Algebrify.</p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card card-custom h-100 p-4 text-center">
+                <div class="bg-primary text-white rounded-circle p-3 mx-auto mb-3" style="width:60px; height:60px;">
+                    <i class="bi bi-compass fs-3"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Our Mission</h4>
+                <p class="text-muted small">
+                    To make Linear Algebra intuitive, accessible, and engaging for students, educators, and engineers through interactive technology and step-by-step guidance.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-custom h-100 p-4 text-center">
+                <div class="bg-purple text-white rounded-circle p-3 mx-auto mb-3" style="width:60px; height:60px;">
+                    <i class="bi bi-eye fs-3"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Our Vision</h4>
+                <p class="text-muted small">
+                    To build the ultimate interactive learning portal where abstract mathematical concepts turn into clear geometric and numerical insights.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-custom h-100 p-4 text-center">
+                <div class="bg-success text-white rounded-circle p-3 mx-auto mb-3" style="width:60px; height:60px;">
+                    <i class="bi bi-cpu fs-3"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Technology Stack</h4>
+                <p class="text-muted small">
+                    Built using Python 3, Django, NumPy, SymPy, Bootstrap 5, MathJax 3, and Django ORM for high performance and clean MVT architecture.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Algebrify – Linear Algebra Solver{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Free step-by-step Linear Algebra solver. Matrix, vector, and linear system solvers with full formula explanations.{% endblock %}">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- MathJax 3 -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath:  [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$','$$'], ['\\[','\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ══════════════════════════════════════════
+       MOBILE TOP HEADER  (visible < 992px)
+  ══════════════════════════════════════════ -->
+  <header class="mobile-top-header" aria-label="Mobile navigation">
+    <a href="{% url 'core:home' %}" class="d-flex align-items-center gap-2 text-decoration-none">
+      <span class="brand-icon-glow" style="width:34px;height:34px;font-size:1rem;">∑</span>
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.05rem;color:#fff;">Algebrify</span>
+    </a>
+    <button class="btn btn-sm" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;"
+            type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas"
+            aria-controls="sidebarOffcanvas" aria-label="Open menu">
+      <i class="bi bi-list fs-5"></i>
+    </button>
+  </header>
+
+  <!-- ══════════════════════════════════════════
+       PERSISTENT LEFT SIDEBAR  (>= 992px)
+  ══════════════════════════════════════════ -->
+  <aside class="app-sidebar" role="navigation" aria-label="Main navigation">
+
+    <!-- Brand -->
+    <a href="{% url 'core:home' %}" class="sidebar-brand" aria-label="Algebrify home">
+      <span class="brand-icon-glow">∑</span>
+      <div class="brand-name-block">
+        <div class="brand-title">Algebrify</div>
+        <div class="brand-sub">Numerical &amp; Symbolic Solver</div>
+      </div>
+    </a>
+
+    <!-- Navigation -->
+    <div class="sidebar-section-title">CALCULATION SYSTEMS</div>
+    <ul class="sidebar-nav" role="menubar">
+
+      <li role="none">
+        <a href="{% url 'core:home' %}"
+           class="sidebar-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+           role="menuitem">
+          <span class="sidebar-nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li role="none">
+        <a href="{% url 'calculators:matrix' %}"
+           class="sidebar-nav-link {% if request.resolver_match.url_name == 'matrix' %}active{% endif %}"
+           role="menuitem">
+          <span class="sidebar-nav-icon">🧮</span>
+          <span>Matrix Module</span>
+        </a>
+      </li>
+
+      <li role="none">
+        <a href="{% url 'calculators:vector' %}"
+           class="sidebar-nav-link {% if request.resolver_match.url_name == 'vector' %}active{% endif %}"
+           role="menuitem">
+          <span class="sidebar-nav-icon">🏹</span>
+          <span>Vector Module</span>
+        </a>
+      </li>
+
+      <li role="none">
+        <a href="{% url 'calculators:system' %}"
+           class="sidebar-nav-link {% if request.resolver_match.url_name == 'system' %}active{% endif %}"
+           role="menuitem">
+          <span class="sidebar-nav-icon">⚖️</span>
+          <span>Linear Systems</span>
+        </a>
+      </li>
+
+      <li role="none">
+        <a href="{% url 'calculators:transformations' %}"
+           class="sidebar-nav-link {% if request.resolver_match.url_name == 'transformations' %}active{% endif %}"
+           role="menuitem">
+          <span class="sidebar-nav-icon">🎨</span>
+          <span>2D Visualizer</span>
+        </a>
+      </li>
+
+    </ul>
+
+    <!-- Quick Shortcuts -->
+    <div class="sidebar-section-title">QUICK SHORTCUTS</div>
+    <div class="d-flex flex-column gap-2 mb-4">
+      <a href="{% url 'calculators:system' %}" class="sidebar-shortcut-pill">
+        <span>Gaussian Elimination</span>
+        <span>→</span>
+      </a>
+      <a href="{% url 'calculators:matrix' %}" class="sidebar-shortcut-pill">
+        <span>Determinant &amp; Inverse</span>
+        <span>→</span>
+      </a>
+      <a href="{% url 'calculators:matrix' %}" class="sidebar-shortcut-pill">
+        <span>Eigenvalues</span>
+        <span>→</span>
+      </a>
+      <a href="{% url 'calculators:vector' %}" class="sidebar-shortcut-pill">
+        <span>Cross Product</span>
+        <span>→</span>
+      </a>
+      <a href="{% url 'calculators:transformations' %}" class="sidebar-shortcut-pill">
+        <span>2D Rotation</span>
+        <span>→</span>
+      </a>
+    </div>
+
+    <!-- Footer status -->
+    <div class="sidebar-footer">
+      <span class="badge-online">
+        <span class="dot-pulse"></span>
+        NumPy &amp; SymPy Engine
+      </span>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════════════════════════════════
+       OFFCANVAS SIDEBAR  (mobile drawer)
+  ══════════════════════════════════════════ -->
+  <div class="offcanvas offcanvas-start offcanvas-sidebar p-3" tabindex="-1"
+       id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
+
+    <div class="offcanvas-header pb-3" style="border-bottom:1px solid rgba(255,255,255,.08);">
+      <a href="{% url 'core:home' %}" class="d-flex align-items-center gap-3 text-decoration-none">
+        <span class="brand-icon-glow">∑</span>
+        <div>
+          <div id="sidebarOffcanvasLabel"
+               style="font-family:'Outfit',sans-serif;font-weight:800;color:#fff;font-size:1.05rem;">
+            Algebrify
+          </div>
+          <div style="font-size:.68rem;color:rgba(255,255,255,.4);">Numerical &amp; Symbolic Engine</div>
+        </div>
+      </a>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body p-0 pt-3">
+      <div class="sidebar-section-title">CALCULATION SYSTEMS</div>
+      <ul class="sidebar-nav" data-bs-dismiss="offcanvas">
+        <li><a href="{% url 'core:home' %}" class="sidebar-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+          <span class="sidebar-nav-icon">📊</span><span>Dashboard</span>
+        </a></li>
+        <li><a href="{% url 'calculators:matrix' %}" class="sidebar-nav-link {% if request.resolver_match.url_name == 'matrix' %}active{% endif %}">
+          <span class="sidebar-nav-icon">🧮</span><span>Matrix Module</span>
+        </a></li>
+        <li><a href="{% url 'calculators:vector' %}" class="sidebar-nav-link {% if request.resolver_match.url_name == 'vector' %}active{% endif %}">
+          <span class="sidebar-nav-icon">🏹</span><span>Vector Module</span>
+        </a></li>
+        <li><a href="{% url 'calculators:system' %}" class="sidebar-nav-link {% if request.resolver_match.url_name == 'system' %}active{% endif %}">
+          <span class="sidebar-nav-icon">⚖️</span><span>Linear Systems</span>
+        </a></li>
+        <li><a href="{% url 'calculators:transformations' %}" class="sidebar-nav-link {% if request.resolver_match.url_name == 'transformations' %}active{% endif %}">
+          <span class="sidebar-nav-icon">🎨</span><span>2D Visualizer</span>
+        </a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MAIN CONTENT AREA
+  ══════════════════════════════════════════ -->
+  <div class="app-main">
+
+    {% if messages %}
+      <div style="padding:.6rem 1.5rem 0;">
+        {% for msg in messages %}
+          <div style="background:rgba(255,214,0,.08);border:1px solid rgba(255,214,0,.25);border-radius:6px;padding:.6rem 1rem;margin-bottom:.4rem;font-size:.85rem;color:#FFD600;display:flex;align-items:center;gap:.5rem;">
+            <i class="bi bi-info-circle-fill"></i> {{ msg }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <main class="page-inner" role="main">{% block content %}{% endblock %}</main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div>
+        <strong style="color:rgba(255,255,255,.65);">Algebrify</strong>
+        &nbsp;·&nbsp; Step-by-step Linear Algebra Solver
+        &nbsp;·&nbsp; Python · NumPy · SymPy · Django
+      </div>
+      <div class="footer-links">
+        <a href="{% url 'calculators:matrix' %}">Matrix</a>
+        <a href="{% url 'calculators:vector' %}">Vector</a>
+        <a href="{% url 'calculators:system' %}">System</a>
+        <a href="{% url 'calculators:transformations' %}">Transforms</a>
+      </div>
+    </footer>
+
+  </div><!-- /app-main -->
+
+</div><!-- /app-layout -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% load static %}
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}My Quiz History – Algebrify{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">Quiz Attempt History</h2>
+            <p class="text-muted small">View all your previous quiz scores and results.</p>
+        </div>
+        <a href="{% url 'quiz:quiz_list' %}" class="btn btn-primary btn-sm rounded-pill fw-bold px-3">
+            <i class="bi bi-plus-lg me-1"></i> Take New Quiz
+        </a>
+    </div>
+
+    <div class="card card-custom p-3">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Quiz Title</th>
+                        <th>Score</th>
+                        <th>Percentage</th>
+                        <th>Status</th>
+                        <th>Date Completed</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for res in results %}
+                        <tr>
+                            <td class="fw-semibold">{{ res.quiz.title }}</td>
+                            <td>{{ res.score }} / {{ res.total_questions }}</td>
+                            <td class="fw-bold">{{ res.percentage|floatformat:1 }}%</td>
+                            <td>
+                                {% if res.passed %}
+                                    <span class="badge bg-success">PASSED</span>
+                                {% else %}
+                                    <span class="badge bg-danger">FAILED</span>
+                                {% endif %}
+                            </td>
+                            <td class="small text-muted">{{ res.completed_at|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <a href="{% url 'quiz:quiz_result' res.id %}" class="btn btn-sm btn-outline-primary rounded-pill">View Details</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">No quiz attempts recorded yet. Take your first quiz!</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

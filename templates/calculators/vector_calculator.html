@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% block title %}Vector Calculator – Algebrify{% endblock %}
+{% block meta_description %}Compute magnitude, unit vector, dot product, cross product, angle, and projection with step-by-step math derivations.{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <div>
+    <div class="page-heading mb-0">
+      <h1>🏹 Vector Operations Module</h1>
+      <p>Euclidean norms, dot products, 3D cross products, vector angles, and orthogonal projections.</p>
+    </div>
+  </div>
+  <div>
+    <span class="badge-engine">
+      <span class="dot-pulse"></span> Vector Engine Ready
+    </span>
+  </div>
+</div>
+
+<!-- Controls Card -->
+<div class="card card-custom mb-4">
+  <div class="card-header-custom">
+    <span><i class="bi bi-sliders me-1"></i> Vector Inputs &amp; Operation</span>
+    <span class="badge-tech">ℝ² · ℝ³ · ℝ⁴</span>
+  </div>
+  <div class="card-body p-3 p-md-4">
+    <form method="post" id="vectorForm">
+      {% csrf_token %}
+      <input type="hidden" name="vector_u" id="vecUData">
+      <input type="hidden" name="vector_v" id="vecVData">
+
+      <div class="row g-3 mb-3">
+        <!-- Dimension -->
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="vecDim">Vector Dimension</label>
+          <select class="form-select" id="vecDim">
+            <option value="2">2D Space (ℝ²)</option>
+            <option value="3" selected>3D Space (ℝ³)</option>
+            <option value="4">4D Space (ℝ⁴)</option>
+          </select>
+        </div>
+
+        <!-- Operation -->
+        <div class="col-12 col-md-8">
+          <label class="form-label" for="vecOp">Select Operation</label>
+          <select class="form-select" id="vecOp" name="operation">
+            <option value="magnitude">‖v‖ Magnitude (Euclidean Norm)</option>
+            <option value="unit">v̂ Unit Vector Normalization</option>
+            <option value="dot">u · v Dot Product (Scalar Product)</option>
+            <option value="cross">u × v Cross Product (3D Only)</option>
+            <option value="angle">∠ Angle Between Vectors</option>
+            <option value="projection">proj Projection of u onto v</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Vector Grids Row -->
+      <div class="row g-4 mb-4">
+        <!-- Vector u -->
+        <div class="col-12 col-md-6">
+          <div class="p-3 border rounded-3" style="background:var(--bg-card-2);border-color:var(--border) !important;">
+            <div class="form-label text-warning mb-2"><i class="bi bi-arrow-up-right me-1"></i> Vector u</div>
+            <div id="vecUGrid" class="vec-inputs"></div>
+          </div>
+        </div>
+
+        <!-- Vector v -->
+        <div class="col-12 col-md-6" id="vecVSection">
+          <div class="p-3 border rounded-3" style="background:var(--bg-card-2);border-color:var(--border) !important;">
+            <div class="form-label text-warning mb-2"><i class="bi bi-arrow-up-right me-1"></i> Vector v</div>
+            <div id="vecVGrid" class="vec-inputs"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formula used + Solve Button -->
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 pt-2 border-top" style="border-color:var(--border) !important;">
+        <div id="vecFormulaRef" class="d-flex align-items-center gap-2">
+          <span class="formula-chip"><i class="bi bi-journal-code me-1"></i> Select operation</span>
+        </div>
+
+        <button type="submit" class="btn-solve" id="solveBtnVec">
+          <i class="bi bi-lightning-fill solve-icon"></i>
+          Solve &amp; Explain
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- Output Section -->
+{% if result %}
+  {% if result.success %}
+    <div class="result-box mb-4">
+      <div class="result-label">
+        <i class="bi bi-check-circle-fill" style="color:var(--success);"></i>
+        Calculated Result
+      </div>
+      <div class="result-math">\[ {{ result.result_latex }} \]</div>
+    </div>
+
+    <div class="steps-list">
+      {% for step in result.steps %}
+        <div class="step-card" style="animation-delay:{{ forloop.counter0 }}0ms;">
+          <div class="step-header">
+            <div class="step-num">{{ forloop.counter }}</div>
+            <div class="step-title-text">{{ step.title }}</div>
+          </div>
+          {% if step.formula %}
+            <div>
+              <span class="formula-chip">
+                <i class="bi bi-braces-asterisk me-1"></i>
+                \( {{ step.formula }} \)
+              </span>
+            </div>
+          {% endif %}
+          <div class="step-math">\[ {{ step.latex }} \]</div>
+          {% if step.explanation %}
+            <div class="step-explanation">
+              <i class="bi bi-info-circle-fill"></i>
+              {{ step.explanation }}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="error-alert">
+      <i class="bi bi-exclamation-triangle-fill flex-shrink-0" style="margin-top:2px;"></i>
+      <div><strong>Vector Error:</strong> {{ result.error }}</div>
+    </div>
+  {% endif %}
+{% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🏹</div>
+    <div class="empty-title">Ready for Vector Calculations</div>
+    <p class="empty-sub">Choose dimension and operation, input vector components, and click <strong>Solve &amp; Explain</strong>.</p>
+  </div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const SINGLE_VEC_OPS = new Set(['magnitude','unit']);
+
+const VEC_FORMULAS = {
+  magnitude:  { name:'Euclidean Norm',         latex:'\\|\\vec{v}\\| = \\sqrt{v_1^2 + v_2^2 + \\cdots + v_n^2}' },
+  unit:       { name:'Unit Vector',            latex:'\\hat{v} = \\dfrac{\\vec{v}}{\\|\\vec{v}\\|}' },
+  dot:        { name:'Dot Product',            latex:'\\vec{u}\\cdot\\vec{v} = \\sum u_i v_i' },
+  cross:      { name:'Cross Product (3D)',      latex:'\\vec{u}\\times\\vec{v} = \\begin{vmatrix}\\hat{i}&\\hat{j}&\\hat{k}\\\\u_1&u_2&u_3\\\\v_1&v_2&v_3\\end{vmatrix}' },
+  angle:      { name:'Angle Between Vectors',  latex:'\\theta = \\arccos\\left(\\dfrac{\\vec{u}\\cdot\\vec{v}}{\\|\\vec{u}\\|\\|\\vec{v}\\|}\\right)' },
+  projection: { name:'Vector Projection',      latex:'\\text{proj}_{\\vec{v}}\\vec{u} = \\dfrac{\\vec{u}\\cdot\\vec{v}}{\\|\\vec{v}\\|^2}\\vec{v}' },
+};
+
+let dim = 3;
+
+function buildVec(containerId, prefix, defaultVals) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const labels = ['x','y','z','w'];
+  let html = '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">';
+  for (let i = 0; i < dim; i++) {
+    const lbl = labels[i] || `v${i+1}`;
+    const val = defaultVals[i] !== undefined ? defaultVals[i] : i+1;
+    html += `
+      <div class="vec-cell-wrap">
+        <span class="vec-label">${lbl}</span>
+        <input type="number" step="any" class="matrix-cell"
+               id="${prefix}_${i}" value="${val}"
+               style="width:55px;height:36px;" aria-label="${lbl} component">
+      </div>`;
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function refreshVec() {
+  dim = parseInt(document.getElementById('vecDim').value);
+  const op = document.getElementById('vecOp').value;
+
+  if (op === 'cross' && dim !== 3) {
+    document.getElementById('vecDim').value = '3';
+    dim = 3;
+  }
+
+  buildVec('vecUGrid', 'vu', [1,2,3,0]);
+  buildVec('vecVGrid', 'vv', [4,5,6,0]);
+
+  document.getElementById('vecVSection').style.display =
+    SINGLE_VEC_OPS.has(op) ? 'none' : '';
+
+  const f = VEC_FORMULAS[op];
+  const ref = document.getElementById('vecFormulaRef');
+  if (f) {
+    ref.innerHTML = `<span class="formula-chip"><i class="bi bi-journal-code me-1"></i> ${f.name}: \\(${f.latex}\\)</span>`;
+    if (window.MathJax) MathJax.typesetPromise([ref]);
+  }
+}
+
+document.getElementById('vecDim').addEventListener('change', refreshVec);
+document.getElementById('vecOp').addEventListener('change', refreshVec);
+
+document.getElementById('vectorForm').addEventListener('submit', function () {
+  const op = document.getElementById('vecOp').value;
+  const u = [], v = [];
+  for (let i = 0; i < dim; i++) {
+    const eu = document.getElementById(`vu_${i}`);
+    u.push(eu ? (parseFloat(eu.value) || 0) : 0);
+    if (!SINGLE_VEC_OPS.has(op)) {
+      const ev = document.getElementById(`vv_${i}`);
+      v.push(ev ? (parseFloat(ev.value) || 0) : 0);
+    }
+  }
+  document.getElementById('vecUData').value = JSON.stringify(u);
+  document.getElementById('vecVData').value = JSON.stringify(v.length ? v : []);
+
+  const btn = document.getElementById('solveBtnVec');
+  btn.classList.add('loading');
+  btn.disabled = true;
+});
+
+refreshVec();
+</script>
+{% endblock %}

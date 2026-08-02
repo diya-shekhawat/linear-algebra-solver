@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ topic.title }} – Algebrify{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'courses:index' %}" class="text-decoration-none">Curriculum</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Unit {{ topic.unit.unit_number }}: {{ topic.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="card card-custom p-4 p-md-5 mb-5 bg-gradient-hero text-white">
+        <span class="badge bg-primary-subtle text-primary border border-primary px-3 py-1 rounded-pill fw-semibold mb-2 align-self-start">Topic #{{ topic.order }}</span>
+        <h1 class="display-5 fw-bold mb-2">{{ topic.title }}</h1>
+        <p class="lead opacity-90 mb-0">{{ topic.description }}</p>
+    </div>
+
+    <h3 class="fw-bold mb-4"><i class="bi bi-book text-primary me-2"></i> Topic Lessons</h3>
+
+    <div class="row g-4">
+        {% for lesson in lessons %}
+            <div class="col-md-6">
+                <div class="card card-custom h-100 p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-secondary-subtle text-secondary rounded-pill">Lesson {{ lesson.order }}</span>
+                        {% if lesson.id in completed_ids %}
+                            <span class="badge bg-success"><i class="bi bi-check-lg me-1"></i> Completed</span>
+                        {% endif %}
+                    </div>
+                    <h4 class="fw-bold mb-2">{{ lesson.title }}</h4>
+                    <p class="text-muted small mb-4">{{ lesson.introduction }}</p>
+
+                    <div class="mt-auto d-flex gap-2">
+                        <a href="{% url 'courses:lesson_detail' lesson.id %}" class="btn btn-primary rounded-pill btn-sm px-3 fw-bold flex-grow-1">
+                            Read Lesson <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                        {% if lesson.has_interactive_calculator %}
+                            <a href="{% url 'calculators:matrix_calculator' %}" class="btn btn-outline-info rounded-pill btn-sm px-3" title="Open Interactive Solver">
+                                <i class="bi bi-calculator"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us – Algebrify Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-custom p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <span class="badge bg-primary-subtle text-primary border px-3 py-2 rounded-pill fw-semibold mb-2">Get In Touch</span>
+                    <h2 class="fw-bold">Contact Algebrify Team</h2>
+                    <p class="text-muted">Have questions, feedback, or need help with a solver? Send us a message.</p>
+                </div>
+
+                <form method="POST" action="{% url 'core:contact' %}">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label fw-semibold">Your Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" required placeholder="John Doe">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label fw-semibold">Email Address *</label>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="john@example.com">
+                        </div>
+                        <div class="col-12">
+                            <label for="subject" class="form-label fw-semibold">Subject *</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required placeholder="Question about Eigenvalue Solver">
+                        </div>
+                        <div class="col-12">
+                            <label for="message" class="form-label fw-semibold">Message *</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required placeholder="Write your message here..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold">
+                                <i class="bi bi-send-fill me-2"></i> Send Message
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

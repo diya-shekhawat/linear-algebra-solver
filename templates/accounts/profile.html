@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile Settings – Algebrify{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Sidebar Summary -->
+        <div class="col-lg-4">
+            <div class="card card-custom p-4 text-center">
+                {% if user.profile.profile_picture %}
+                    <img src="{{ user.profile.profile_picture.url }}" class="rounded-circle mx-auto mb-3 shadow" style="width: 120px; height: 120px; object-fit: cover;" alt="Profile Picture">
+                {% else %}
+                    <div class="bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center shadow" style="width: 100px; height: 100px;">
+                        <i class="bi bi-person-fill fs-1"></i>
+                    </div>
+                {% endif %}
+
+                <h4 class="fw-bold mb-1">{{ user.get_full_name|default:user.username }}</h4>
+                <p class="text-muted small mb-3">@{{ user.username }} • {{ user.email }}</p>
+
+                <div class="d-flex justify-content-around bg-body-tertiary p-3 rounded-3 mb-3">
+                    <div>
+                        <div class="fw-bold fs-4 text-warning"><i class="bi bi-fire me-1"></i>{{ user.profile.learning_streak }}</div>
+                        <span class="small text-muted">Day Streak</span>
+                    </div>
+                    <div class="border-start px-3">
+                        <div class="fw-bold fs-4 text-primary">{{ user.profile.total_quiz_score }}</div>
+                        <span class="small text-muted">Points</span>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'accounts:change_password' %}" class="btn btn-outline-primary rounded-pill btn-sm fw-semibold">
+                        <i class="bi bi-key me-1"></i> Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Form -->
+        <div class="col-lg-8">
+            <div class="card card-custom p-4 p-md-5">
+                <h3 class="fw-bold mb-4"><i class="bi bi-person-gear text-primary me-2"></i> Edit Account Settings</h3>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <h5 class="fw-semibold text-secondary mb-3 border-bottom pb-2">User Details</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="id_first_name" class="form-label fw-semibold">First Name</label>
+                            {{ u_form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_last_name" class="form-label fw-semibold">Last Name</label>
+                            {{ u_form.last_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_username" class="form-label fw-semibold">Username</label>
+                            {{ u_form.username }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_email" class="form-label fw-semibold">Email Address</label>
+                            {{ u_form.email }}
+                        </div>
+                    </div>
+
+                    <h5 class="fw-semibold text-secondary mb-3 border-bottom pb-2">Profile Bio & Picture</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label for="id_bio" class="form-label fw-semibold">Short Bio</label>
+                            {{ p_form.bio }}
+                        </div>
+                        <div class="col-12">
+                            <label for="id_profile_picture" class="form-label fw-semibold">Upload Profile Picture</label>
+                            {{ p_form.profile_picture }}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">
+                        <i class="bi bi-save me-2"></i> Save Profile Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
