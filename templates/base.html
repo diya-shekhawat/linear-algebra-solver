@@ -43,13 +43,19 @@
   <header class="mobile-top-header" aria-label="Mobile navigation">
     <a href="{% url 'core:home' %}" class="d-flex align-items-center gap-2 text-decoration-none">
       <span class="brand-icon-glow" style="width:34px;height:34px;font-size:1rem;">∑</span>
-      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.05rem;color:#fff;">Algebrify</span>
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.05rem;color:var(--white);">Algebrify</span>
     </a>
-    <button class="btn btn-sm" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;"
-            type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas"
-            aria-controls="sidebarOffcanvas" aria-label="Open menu">
-      <i class="bi bi-list fs-5"></i>
-    </button>
+    <div class="d-flex align-items-center gap-2">
+      <button id="themeToggleMobile" class="btn btn-sm" style="background:var(--white-08);border:1px solid var(--border);color:var(--white);"
+              type="button" aria-label="Toggle theme">
+        <i id="themeIconMobile" class="bi bi-moon-stars-fill"></i>
+      </button>
+      <button class="btn btn-sm" style="background:var(--white-08);border:1px solid var(--border);color:var(--white);"
+              type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas"
+              aria-controls="sidebarOffcanvas" aria-label="Open menu">
+        <i class="bi bi-list fs-5"></i>
+      </button>
+    </div>
   </header>
 
   <!-- ══════════════════════════════════════════
@@ -117,6 +123,16 @@
 
     </ul>
 
+    <!-- Theme Switcher -->
+    <div class="sidebar-section-title">THEME PREFERENCE</div>
+    <button id="themeToggle" class="sidebar-theme-btn" type="button" aria-label="Toggle dark/light theme">
+      <div class="d-flex align-items-center gap-2">
+        <i id="themeIcon" class="bi bi-sun-fill text-warning"></i>
+        <span id="themeText">Light Mode</span>
+      </div>
+      <span class="badge-theme-mode">Switch</span>
+    </button>
+
     <!-- Quick Shortcuts -->
     <div class="sidebar-section-title">QUICK SHORTCUTS</div>
     <div class="d-flex flex-column gap-2 mb-4">
@@ -158,15 +174,15 @@
   <div class="offcanvas offcanvas-start offcanvas-sidebar p-3" tabindex="-1"
        id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
 
-    <div class="offcanvas-header pb-3" style="border-bottom:1px solid rgba(255,255,255,.08);">
+    <div class="offcanvas-header pb-3" style="border-bottom:1px solid var(--border);">
       <a href="{% url 'core:home' %}" class="d-flex align-items-center gap-3 text-decoration-none">
         <span class="brand-icon-glow">∑</span>
         <div>
           <div id="sidebarOffcanvasLabel"
-               style="font-family:'Outfit',sans-serif;font-weight:800;color:#fff;font-size:1.05rem;">
+               style="font-family:'Outfit',sans-serif;font-weight:800;color:var(--white);font-size:1.05rem;">
             Algebrify
           </div>
-          <div style="font-size:.68rem;color:rgba(255,255,255,.4);">Numerical &amp; Symbolic Engine</div>
+          <div style="font-size:.68rem;color:var(--white-40);">Numerical &amp; Symbolic Engine</div>
         </div>
       </a>
       <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
@@ -186,7 +202,6 @@
         </a></li>
         <li><a href="{% url 'calculators:system' %}" class="sidebar-nav-link {% if request.resolver_match.url_name == 'system' %}active{% endif %}">
           <span class="sidebar-nav-icon">⚖️</span><span>Linear Systems</span>
-        </a></li>
         <li><a href="{% url 'calculators:transformations' %}" class="sidebar-nav-link {% if request.resolver_match.url_name == 'transformations' %}active{% endif %}">
           <span class="sidebar-nav-icon">🎨</span><span>2D Visualizer</span>
         </a></li>

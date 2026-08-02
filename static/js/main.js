@@ -9,31 +9,49 @@
 // ══════════════════════════════════════════
 
 (function () {
-  const saved = localStorage.getItem('algebrify_theme') || 'light';
+  const saved = localStorage.getItem('algebrify_theme') || 'dark';
   document.documentElement.setAttribute('data-bs-theme', saved);
+  document.documentElement.setAttribute('data-theme', saved);
 })();
 
 document.addEventListener('DOMContentLoaded', function () {
-  applyThemeIcon();
+  updateThemeUI();
 
   const btn = document.getElementById('themeToggle');
-  if (btn) {
-    btn.addEventListener('click', function () {
-      const curr = document.documentElement.getAttribute('data-bs-theme');
-      const next = curr === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-bs-theme', next);
-      localStorage.setItem('algebrify_theme', next);
-      applyThemeIcon();
-    });
+  const mobileBtn = document.getElementById('themeToggleMobile');
+
+  function toggleTheme() {
+    const curr = document.documentElement.getAttribute('data-bs-theme') || 'dark';
+    const next = curr === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-bs-theme', next);
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('algebrify_theme', next);
+    updateThemeUI();
+
+    // Redraw 2D canvas if visualizer is open
+    if (typeof draw2DTransformation === 'function' && document.getElementById('transformCanvas')) {
+      const M = typeof readMatrixGrid === 'function' ? readMatrixGrid(2, 2, 'tf') : [[1,0],[0,1]];
+      draw2DTransformation('transformCanvas', M);
+    }
   }
+
+  if (btn) btn.addEventListener('click', toggleTheme);
+  if (mobileBtn) mobileBtn.addEventListener('click', toggleTheme);
 });
 
-function applyThemeIcon() {
+function updateThemeUI() {
+  const theme = document.documentElement.getAttribute('data-bs-theme') || 'dark';
+  const isDark = theme === 'dark';
+
   const icon = document.getElementById('themeIcon');
-  if (!icon) return;
-  const theme = document.documentElement.getAttribute('data-bs-theme');
-  icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+  const text = document.getElementById('themeText');
+  const mobileIcon = document.getElementById('themeIconMobile');
+
+  if (icon) icon.className = isDark ? 'bi bi-sun-fill text-warning' : 'bi bi-moon-stars-fill text-primary';
+  if (text) text.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+  if (mobileIcon) mobileIcon.className = isDark ? 'bi bi-sun-fill text-warning' : 'bi bi-moon-stars-fill text-primary';
 }
+
 
 
 // ══════════════════════════════════════════

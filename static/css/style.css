@@ -6,13 +6,16 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400;1,600&display=swap');
 
-/* ── Variables ── */
-:root {
+/* ── Variables & Themes ── */
+:root,
+[data-bs-theme="dark"],
+[data-theme="dark"] {
   --bg-main:      #080a0f;
   --bg-sidebar:   #0c0f18;
   --bg-card:      #0f1420;
   --bg-card-2:    #141824;
   --bg-surface:   #111520;
+  --bg-input:     rgba(5, 7, 14, 0.9);
 
   --yellow:       #FFD600;
   --yellow-dim:   #F5C800;
@@ -41,6 +44,35 @@
   --radius-md:    14px;
   --radius-lg:    20px;
 }
+
+[data-bs-theme="light"],
+[data-theme="light"] {
+  --bg-main:      #f3f5f9;
+  --bg-sidebar:   #ffffff;
+  --bg-card:      #ffffff;
+  --bg-card-2:    #f8fafc;
+  --bg-surface:   #f1f5f9;
+  --bg-input:     #ffffff;
+
+  --yellow:       #d97706; /* Warm Amber Gold */
+  --yellow-dim:   #b45309;
+  --yellow-glow:  rgba(217, 119, 6, 0.20);
+  --yellow-pale:  rgba(217, 119, 6, 0.08);
+  --yellow-border:rgba(217, 119, 6, 0.30);
+
+  --white:        #0f172a; /* High contrast body text */
+  --white-70:     #334155;
+  --white-40:     #64748b;
+  --white-15:     rgba(15, 23, 42, 0.08);
+  --white-08:     rgba(15, 23, 42, 0.04);
+
+  --border:       #e2e8f0;
+  --border-hover: rgba(217, 119, 6, 0.40);
+
+  --danger:       #dc2626;
+  --success:      #16a34a;
+}
+
 
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -378,6 +410,44 @@ body {
 }
 
 /* ═══════════════════════════════════
+   THEME TOGGLE BUTTON STYLES
+   ═══════════════════════════════════ */
+.sidebar-theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--white-08);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.sidebar-theme-btn:hover {
+  background: var(--yellow-pale);
+  border-color: var(--yellow-border);
+  color: var(--yellow);
+}
+
+.badge-theme-mode {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: var(--yellow-pale);
+  color: var(--yellow);
+  border: 1px solid var(--yellow-border);
+}
+
+/* ═══════════════════════════════════
    FORM CONTROLS
    ═══════════════════════════════════ */
 .form-label,
@@ -393,7 +463,7 @@ label {
 .form-select,
 input[type="number"],
 input[type="text"] {
-  background: rgba(5, 7, 14, 0.9) !important;
+  background: var(--bg-input) !important;
   border: 1.5px solid var(--border) !important;
   color: var(--white) !important;
   font-family: var(--font-mono) !important;
@@ -407,7 +477,7 @@ input[type="text"] {
 .form-control:focus,
 .form-select:focus,
 input[type="number"]:focus {
-  background: rgba(12, 15, 28, 0.98) !important;
+  background: var(--bg-card) !important;
   border-color: var(--yellow) !important;
   box-shadow: 0 0 0 3px var(--yellow-glow) !important;
   color: var(--yellow) !important;
@@ -456,7 +526,7 @@ input[type="number"]:focus {
   font-size: 0.85rem !important;
   font-weight: 600 !important;
   padding: 2px 4px !important;
-  background: rgba(5,7,14,0.9) !important;
+  background: var(--bg-input) !important;
   border: 1px solid var(--border) !important;
   border-radius: 5px !important;
   color: var(--yellow) !important;
@@ -639,7 +709,7 @@ input[type="number"]:focus {
 
 /* Step LaTeX block */
 .step-math {
-  background: rgba(5, 7, 14, 0.85);
+  background: var(--bg-card-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 0.7rem 0.85rem;
